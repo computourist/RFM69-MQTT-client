@@ -55,11 +55,11 @@
 //
 // CONFIGURATION PARAMETERS
 //
-#define NODEID 3 						// unique node ID within the closed network
-#define GATEWAYID 1						// node ID of the Gateway is always 1
+#define NODEID 3 					// unique node ID within the closed network
+#define GATEWAYID 1					// node ID of the Gateway is always 1
 #define NETWORKID 100					// network ID of the network
-#define ENCRYPTKEY "xxxxxxxxxxxxxxxx" 	// 16-char encryption key; same as on Gateway!
-//#define DEBUG							// uncomment for debugging
+#define ENCRYPTKEY "xxxxxxxxxxxxxxxx" 			// 16-char encryption key; same as on Gateway!
+//#define DEBUG						// uncomment for debugging
 #define VERSION "DHT V1.7"				// this value can be queried as device 3
 
 // Wireless settings	Match frequency to the hardware version of the radio
@@ -68,14 +68,14 @@
 #define FREQUENCY RF69_868MHZ
 //#define FREQUENCY RF69_915MHZ
 
-#define IS_RFM69HW 						// uncomment only for RFM69HW! 
+#define IS_RFM69HW 					// uncomment only for RFM69HW! 
 #define ACK_TIME 50 					// max # of ms to wait for an ack
 
 // DHT 11 / sensor setting
-#define DHTPIN 4						// DHT data connection
+#define DHTPIN 4					// DHT data connection
 #define	DHTTYPE	DHT11					// type of sensor
-#define ACT1 9							// Actuator pin (LED or relay)
-#define BTN 8							// Button pin
+#define ACT1 9						// Actuator pin (LED or relay)
+#define BTN 8						// Button pin
 #define SERIAL_BAUD 115200
 #define HOLDOFF 10000					// blocking period between button messages
 
@@ -85,40 +85,40 @@
 long 	TXinterval = 60;				// periodic transmission interval in seconds
 long	TIMinterval = 20;				// timer interval in seconds
 bool	ackButton = false;				// flag for message on button press
-bool	toggleOnButton = true;			// toggle output on button press
+bool	toggleOnButton = true;				// toggle output on button press
 
 //
 //	VARIABLES
 //
 long	lastPeriod = -1;				// timestamp last transmission
 long 	lastBtnPress = -1;				// timestamp last buttonpress
-float	hum, temp;						// humidity, temperature
-int		ACT1State;						// status ACT1 output
-int		signalStrength;					// radio signal strength
+float	hum, temp;					// humidity, temperature
+int	ACT1State;					// status ACT1 output
+int	signalStrength;					// radio signal strength
 bool	setAck = false;					// send ACK message on 'SET' request
 bool	send1, send2, send3, send4;
 bool	send5, send6, send7, send8;
-bool	send10, send20, send31, send32;	// message triggers
-bool	promiscuousMode = false; 		// only listen to nodes within the closed network
+bool	send10, send20, send31, send32;			// message triggers
+bool	promiscuousMode = false; 			// only listen to nodes within the closed network
 bool	curState = true;				// current button state
 bool	lastState = true;				// last button state
 bool 	wakeUp = true;					// wakeup flag
-bool	timerOnButton = false;			// timer output on button press
+bool	timerOnButton = false;				// timer output on button press
 bool	msgBlock = false;				// flag to hold button messages to prevent overload
 
 
-typedef struct {						// Radio packet format
-int		nodeID;							// node identifier
-int		devID;							// device identifier 
-int		cmd;							// read or write
-int		intVal;							// integer payload
-float	fltVal;							// floating payload
+typedef struct {					// Radio packet format
+int	nodeID;						// node identifier
+int	devID;						// device identifier 
+int	cmd;						// read or write
+int	intVal;						// integer payload
+float	fltVal;						// floating payload
 char	payLoad[10];					// string payload
 } Message;
 
 Message mes;
 
-DHT dht(DHTPIN, DHTTYPE, 3);			// initialise temp/hum sensor for 3.3 Volt arduino
+DHT dht(DHTPIN, DHTTYPE, 3);			// initialise temp/humidity sensor for 3.3 Volt arduino
 RFM69 radio;
 
 //
@@ -128,18 +128,18 @@ void setup() {
 #ifdef DEBUG
 	Serial.begin(SERIAL_BAUD);
 #endif
-pinMode(ACT1, OUTPUT);										// set actuator 1
+pinMode(ACT1, OUTPUT);					// set actuator 1
 ACT1State = 0;
 digitalWrite(ACT1, ACT1State);
-dht.begin();												// initialise temp/hum sensor
-radio.initialize(FREQUENCY,NODEID,NETWORKID);				// initialise radio 
+dht.begin();						// initialise temp/hum sensor
+radio.initialize(FREQUENCY,NODEID,NETWORKID);		// initialise radio 
 #ifdef IS_RFM69HW
-radio.setHighPower(); 										// only for RFM69HW!
+radio.setHighPower(); 					// only for RFM69HW!
 #endif
-radio.encrypt(ENCRYPTKEY);									// set radio encryption	
-radio.promiscuous(promiscuousMode);							// only listen to closed network
-wakeUp = true;												// send wakeup message
-send8 = false;												// initialise button press flag
+radio.encrypt(ENCRYPTKEY);				// set radio encryption	
+radio.promiscuous(promiscuousMode);			// only listen to closed network
+wakeUp = true;						// send wakeup message
+send8 = false;						// initialise button press flag
 
 #ifdef DEBUG
 	Serial.print("Node Software Version ");
@@ -157,23 +157,23 @@ send8 = false;												// initialise button press flag
 void loop() {
 // RECEIVE radio input
 //
-if (receiveData()) parseCmd();								// receive and parse any radio input
+if (receiveData()) parseCmd();				// receive and parse any radio input
 
 // DETECT BUTTON PRESS
 //
 curState = digitalRead(BTN);
-msgBlock = (millis() - lastBtnPress < HOLDOFF);				// hold-off time for additional button messages
-if (curState == LOW && lastState == HIGH) {					// button pressed ?
+msgBlock = (millis() - lastBtnPress < HOLDOFF);		// hold-off time for additional button messages
+if (curState == LOW && lastState == HIGH) {		// button pressed ?
 	delay(5);
-	lastBtnPress = millis();								// take timestamp
-	if (ackButton && !msgBlock) send20 = true;				// set button message flag
-	if (toggleOnButton) {									// button in toggle state ?
-	ACT1State = !ACT1State; 								// toggle output
+	lastBtnPress = millis();			// take timestamp
+	if (ackButton && !msgBlock) send20 = true;	// set button message flag
+	if (toggleOnButton) {				// button in toggle state ?
+	ACT1State = !ACT1State; 			// toggle output
 	digitalWrite(ACT1, ACT1State);
 	} else
-	if (TIMinterval > 0 && !timerOnButton) {				// button in timer state ?
-	timerOnButton = true;									// start timer interval
-	ACT1State = HIGH;										// switch on ACT1
+	if (TIMinterval > 0 && !timerOnButton) {	// button in timer state ?
+	timerOnButton = true;				// start timer interval
+	ACT1State = HIGH;				// switch on ACT1
 	digitalWrite(ACT1, ACT1State);
 	}
 }
@@ -182,11 +182,11 @@ lastState = digitalRead(BTN);
 // TIMER CHECK
 //
 
-if (TIMinterval > 0 && timerOnButton)						// =0 means no timer
+if (TIMinterval > 0 && timerOnButton)			// =0 means no timer
 {	
-	if ( millis() - lastBtnPress > TIMinterval*1000) {		// timer expired ?
-	timerOnButton = false;									// then end timer interval 
-	ACT1State = LOW;										// and switch off Actuator
+	if ( millis() - lastBtnPress > TIMinterval*1000) {	// timer expired ?
+	timerOnButton = false;				// then end timer interval 
+	ACT1State = LOW;				// and switch off Actuator
 	digitalWrite(ACT1, ACT1State);
 	}
 }
@@ -197,25 +197,25 @@ if (TIMinterval > 0 && timerOnButton)						// =0 means no timer
 if (TXinterval > 0)
 {
 int currPeriod = millis()/(TXinterval*1000);
-if (currPeriod != lastPeriod) {								// interval elapsed ?
+if (currPeriod != lastPeriod) {				// interval elapsed ?
 	lastPeriod = currPeriod;
 	
 // list of sensordata to be sent periodically..
 // remove comment to include parameter in transmission
  
-//	send1 = true;											// send transmission interval
-//	send2 = true; 											// signal strength
-//	send4 = true;											// voltage level
-//	send10 = true;											// actuator state
-	send31 = true;											// send temperature
-	send32 = true;											// send humidity
+//	send1 = true;					// send transmission interval
+//	send2 = true; 					// signal strength
+//	send4 = true;					// voltage level
+//	send10 = true;					// actuator state
+	send31 = true;					// send temperature
+	send32 = true;					// send humidity
 	}
 }
 
 // SEND RADIO PACKETS
 //
 
-sendMsg();													// send any radio messages 
+sendMsg();						// send any radio messages 
 
 }		// end loop
 
@@ -229,9 +229,9 @@ sendMsg();													// send any radio messages
 
 bool receiveData() {
 bool validPacket = false;
-if (radio.receiveDone())									// check for received packets
+if (radio.receiveDone())				// check for received packets
 {
-if (radio.DATALEN != sizeof(mes))							// wrong message size means trouble
+if (radio.DATALEN != sizeof(mes))			// wrong message size means trouble
 #ifdef DEBUG
 	Serial.println("invalid message structure..")
 #endif
@@ -239,7 +239,7 @@ if (radio.DATALEN != sizeof(mes))							// wrong message size means trouble
 else
 {
 	mes = *(Message*)radio.DATA;
-	validPacket = true;										// YES, we have a packet !
+	validPacket = true;				// YES, we have a packet !
 	signalStrength = radio.RSSI;
 #ifdef DEBUG
 	Serial.print(mes.devID);
@@ -256,8 +256,8 @@ else
 #endif	
 }
 }
-if (radio.ACKRequested()) radio.sendACK();					// respond to any ACK request
-return validPacket;											// return code indicates packet received
+if (radio.ACKRequested()) radio.sendACK();		// respond to any ACK request
+return validPacket;					// return code indicates packet received
 }		// end recieveData
 
 //
@@ -265,8 +265,8 @@ return validPacket;											// return code indicates packet received
 //==============		PARSECMD: analyse messages and execute commands received from gateway
 //
 
-void parseCmd() {											// parse messages received from the gateway
-send1 = false;												// initialise all send triggers
+void parseCmd() {					// parse messages received from the gateway
+send1 = false;						// initialise all send triggers
 send2 = false;
 send3 = false; 
 send4 = false;
@@ -278,79 +278,79 @@ send10 = false;
 send31 = false;
 send32 = false;
 
-switch (mes.devID)											// devID indicates device (sensor) type
+switch (mes.devID)					// devID indicates device (sensor) type
 {
-case (1):													// polling interval in seconds
-if (mes.cmd == 0) {											// cmd == 0 means write a value
-	TXinterval = mes.intVal;								// change interval to radio packet value
+case (1):						// polling interval in seconds
+if (mes.cmd == 0) {					// cmd == 0 means write a value
+	TXinterval = mes.intVal;			// change interval to radio packet value
 	if (TXinterval <5 && TXinterval !=0) TXinterval = 10;	// minimum interval is 10 seconds
-	if (setAck) send1 = true;								// send message if required
+	if (setAck) send1 = true;			// send message if required
 #ifdef DEBUG
 	Serial.print("Setting interval to ");
 	Serial.print(TXinterval);
 	Serial.println(" seconds");
 #endif
 }
-else send1 = true;											// cmd == 1 is a read request, so send polling interval 
+else send1 = true;					// cmd == 1 is a read request, so send polling interval 
 break;
-case (2): 													// signal strength
+case (2): 						// signal strength
 if (mes.cmd == 1) send2 = true;
 break;
-case (3): 													// software version
+case (3): 						// software version
 if (mes.cmd == 1) send3 = true;
 break;
-case (4): 													// battery level
+case (4): 						// battery level
 if (mes.cmd == 1) send4 = true;
 break;
-case (5): 													// set ack status
+case (5): 						// set ack status
 if (mes.cmd == 0) {
 	if (mes.intVal == 0) setAck = false;
 	if (mes.intVal == 1) setAck = true;
-	if (setAck) send5 = true;								// acknowledge message ?
+	if (setAck) send5 = true;			// acknowledge message ?
 }
-else send5 = true;											// read request means schedule a message
+else send5 = true;					// read request means schedule a message
 break;
-case (6): 													// set toggle
+case (6): 						// set toggle
 if (mes.cmd == 0) {
 	if (mes.intVal == 0) toggleOnButton = false;
 	if (mes.intVal == 1) toggleOnButton = true;
-	if (setAck) send6 = true;								// acknowledge message ?
+	if (setAck) send6 = true;			// acknowledge message ?
 }
 else send6 = true;
 break;
-case (7):													// timer interval in seconds
-if (mes.cmd == 0) {											// cmd == 0 means write a value
-	TIMinterval = mes.intVal;								// change interval 
+case (7):						// timer interval in seconds
+if (mes.cmd == 0) {					// cmd == 0 means write a value
+	TIMinterval = mes.intVal;			// change interval 
 	if (TIMinterval <5 && TIMinterval !=0) TIMinterval = 5;
-	if (setAck) send7 = true;								// acknowledge message ?
-}															// cmd == 1 means read a value
-else send7 = true;											// send timing interval 
+	if (setAck) send7 = true;			// acknowledge message ?
+}							// cmd == 1 means read a value
+else send7 = true;					// send timing interval 
 break;
-case (8): 													// set button ack status
+case (8): 						// set button ack status
 if (mes.cmd == 0) {
 	if (mes.intVal == 0) ackButton = false;
 	if (mes.intVal == 1) ackButton = true;
-	if (setAck) send8 = true;								// acknowledge message ?
+	if (setAck) send8 = true;			// acknowledge message ?
 }
 else send8 = true;
 break;
-case (10):													// Actuator 1
-if (mes.cmd == 0) {											// cmd == 0 means write
+case (10):						// Actuator 1
+if (mes.cmd == 0) {					// cmd == 0 means write
 	if(mes.intVal == 0 || mes.intVal == 1) {
 	ACT1State = mes.intVal;
 	digitalWrite(ACT1, ACT1State);
-	if (setAck) send10 = true;								// acknowledge message ?
+	if (setAck) send10 = true;			// acknowledge message ?
 #ifdef DEBUG	
 	Serial.print("Set LED to ");
 	Serial.println(ACT1State);
 #endif
 }}
-else send10 = true;											// cmd == 1 means read
+else send10 = true;					// cmd == 1 means read
 break;
-case (31):													// temperature
+case (31):						// temperature
 if (mes.cmd == 1) send31 = true;
 break;
-case (32):													// humidity
+case (32):						// humidity
 if (mes.cmd == 1) send32 = true;
 break;
 }
@@ -361,102 +361,102 @@ break;
 //======================		SENDMSG: sends messages that are flagged for transmission
 //
 
-void sendMsg() {											// prepares values to be transmitted
-bool tx = false; 											// transmission flag
+void sendMsg() {					// prepares values to be transmitted
+bool tx = false; 					// transmission flag
 mes.nodeID=NODEID;
 mes.intVal = 0;
 mes.fltVal = 0;
-mes.cmd = 0;												// '0' means no action needed in gateway
+mes.cmd = 0;						// '0' means no action needed in gateway
 int i;
 for ( i = 0; i < sizeof(VERSION); i++){
 mes.payLoad[i] = VERSION[i];	}
-mes.payLoad[i] = '\0';										// software version in payload string
+mes.payLoad[i] = '\0';					// software version in payload string
 
-if (wakeUp) {												// send wakeUp call 
+if (wakeUp) {						// send wakeUp call 
 	mes.devID = 99;	
-	wakeUp = false;											// reset transmission flag for this message
-	txRadio();												// transmit
+	wakeUp = false;					// reset transmission flag for this message
+	txRadio();					// transmit
 }
-if (send1) {												// transmission interval
+if (send1) {						// transmission interval
 	mes.devID = 1;
-	mes.intVal = TXinterval;								// seconds (integer)
+	mes.intVal = TXinterval;			// seconds (integer)
 	send1 = false;
 	txRadio();
 }
 if (send2) {
 	mes.devID = 2;
-	mes.intVal = signalStrength;							// signal strength (integer)
+	mes.intVal = signalStrength;			// signal strength (integer)
 	send2 = false;
 	txRadio();
 }
-if (send3) {												// node software version (string)
-	mes.devID = 3;											// already stored in payload string
+if (send3) {						// node software version (string)
+	mes.devID = 3;					// already stored in payload string
 	send3 = false;
 	txRadio();
 }
-if (send4) {												// measure voltage..
+if (send4) {							// measure voltage..
 	mes.devID = 4;	
-	long result;											// Read 1.1V reference against AVcc
+	long result;						// Read 1.1V reference against AVcc
 	ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
-	delay(2);												// Wait for Vref to settle
-	ADCSRA |= _BV(ADSC);									// Convert
+	delay(2);						// Wait for Vref to settle
+	ADCSRA |= _BV(ADSC);					// Convert
 	while (bit_is_set(ADCSRA,ADSC));
 	result = ADCL;
 	result |= ADCH<<8;
-	result = 1126400L / result; 							// Back-calculate in mV
-	mes.fltVal = float(result/1000.0);						// Voltage in Volt (float)
+	result = 1126400L / result; 				// Back-calculate in mV
+	mes.fltVal = float(result/1000.0);			// Voltage in Volt (float)
 	txRadio();
 	send4 = false;
 }
-if (send5) {												// Acknowledge on 'SET'
+if (send5) {							// Acknowledge on 'SET'
 	mes.devID = 5;
-	if (setAck) mes.intVal = 1; else mes.intVal = 0;		// state (integer)
+	if (setAck) mes.intVal = 1; else mes.intVal = 0;	// state (integer)
 	send5 = false;
 	txRadio();
 }
-if (send6) {												// Toggle on Buttonpress 
+if (send6) {							// Toggle on Buttonpress 
 	mes.devID = 6;
-	if (toggleOnButton) mes.intVal = 1; 					// read state of toggle flag
-	else mes.intVal = 0;									// state (integer)
+	if (toggleOnButton) mes.intVal = 1; 			// read state of toggle flag
+	else mes.intVal = 0;					// state (integer)
 	send6 = false;
 	txRadio();
 }
-if (send7) {												// timer interval
+if (send7) {							// timer interval
 	mes.devID = 7;
-	mes.intVal = TIMinterval;								// seconds (integer)
+	mes.intVal = TIMinterval;				// seconds (integer)
 	send7 = false;
 	txRadio();
 }
-if (send8) {												// Send Button pressed message
+if (send8) {							// Send Button pressed message
 	mes.devID = 8;
 	if (ackButton) mes.intVal = 1; 
-	else mes.intVal = 0;									// state (integer)
+	else mes.intVal = 0;					// state (integer)
 	send8 = false;
 	txRadio();
 }
-if (send10) {												// state of Actuator 1
+if (send10) {							// state of Actuator 1
 	mes.devID = 10;
-	mes.intVal = ACT1State;									// state (integer)
+	mes.intVal = ACT1State;					// state (integer)
 	send10 = false;
 	txRadio();
 }
-if (send20) {												// Button presssed
+if (send20) {							// Button presssed
 	mes.devID = 20;
-	mes.intVal = 1;											// state (integer)
+	mes.intVal = 1;						// state (integer)
 	send20 = false;
 	txRadio();
 }
-if (send31) {												// Temperature
+if (send31) {							// Temperature
 	mes.devID = 31;
 	temp = dht.readTemperature();
-	mes.fltVal = temp;										// Degrees Celcius (float)
+	mes.fltVal = temp;					// Degrees Celcius (float)
 	send31 = false;
 	txRadio();
 }
-if (send32) {												// Humidity
+if (send32) {							// Humidity
 	mes.devID = 32;
 	hum = dht.readHumidity();
-	mes.fltVal = hum;										// Percentage (float)
+	mes.fltVal = hum;					// Percentage (float)
 	send32 = false;
 	txRadio();
 }
@@ -468,7 +468,7 @@ if (send32) {												// Humidity
 //=======================		TXRADIO
 //
 
-void txRadio()												// Transmits the 'mes'-struct to the gateway
+void txRadio()							// Transmits the 'mes'-struct to the gateway
 {
 if (radio.sendWithRetry(GATEWAYID, (const void*)(&mes), sizeof(mes)))
 #ifdef DEBUG
