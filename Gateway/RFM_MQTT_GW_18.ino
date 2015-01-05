@@ -23,11 +23,11 @@
 //	5	ACK:			read/set acknowledge message after 'SET' request
 //	6	toggle:			read/set toggle function on button press
 //	7	timer:			read/set activation timer after button press in seconds, 0 means no timer
-//	8	buttonpress:	read/set flag to send a message when button pressed
+//	8	buttonpress:		read/set flag to send a message when button pressed
 //
 //	10	actuator:		read/set LED or relay output
 //	20	Button:			tx only: message sent when button pressed
-//	31	temperature:	read temperature
+//	31	temperature:		read temperature
 //	32	humidity:		read humidity
 //	99	wakeup:			tx only: sends a message on node startup
 //
@@ -36,6 +36,8 @@
 //		  (See http://harizanov.com/2012/04/rfm12b-and-arduino-ethernet-with-wiznet5100-chip/)
 //		- Ethernet card and RFM68 board default use the same Slave Select pin (10) on the SPI bus;
 //		  To avoid conflict the RFM module is controlled by another SS pin (8).
+//		- To avoid interfacing problems the Arduino is powered by 3.3 Volts. 
+//		  The clock frequency is reduced to 8 MHz,
 //
 //
 // RFM69 Library by Felix Rusu - felix@lowpowerlab.com
