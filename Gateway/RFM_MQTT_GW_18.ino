@@ -20,12 +20,12 @@
 //	2	RSSI:			read reception strength
 //	3	Version:		read version node software
 //	4	voltage:		read battery level
-//	5	ACK:			read/set acknowledge message after 'SET' request
-//	6	toggle:			read/set toggle function on button press
+//	5	ACK:			read/set acknowledge message after 'SET' request (ON/OFF)
+//	6	toggle:			read/set toggle function on button press (ON/OFF)
 //	7	timer:			read/set activation timer after button press in seconds, 0 means no timer
-//	8	buttonpress:		read/set flag to send a message when button pressed
+//	8	buttonpress:		read/set flag to send a message when button pressed (ON/OFF)
 //
-//	10	actuator:		read/set LED or relay output
+//	10	actuator:		read/set LED or relay output (ON/OFF)
 //	20	Button:			tx only: message sent when button pressed
 //	31	temperature:		read temperature
 //	32	humidity:		read humidity
