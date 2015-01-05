@@ -37,7 +37,10 @@
 //		- Ethernet card and RFM68 board default use the same Slave Select pin (10) on the SPI bus;
 //		  To avoid conflict the RFM module is controlled by another SS pin (8).
 //		- To avoid interfacing problems the Arduino is powered by 3.3 Volts. 
-//		  The clock frequency is reduced to 8 MHz,
+//		  The clock frequency is reduced to 8 MHz.
+//		- Wiznet indicates a problem when using W5100 with multiple devices on the SPI bus.
+//		  (see http://wiznethk.blogspot.nl/2009/09/spi-guide.html)
+//		  I have not encountered these problems and did NOT include the proposed inverter in my design. 
 //
 //
 // RFM69 Library by Felix Rusu - felix@lowpowerlab.com
