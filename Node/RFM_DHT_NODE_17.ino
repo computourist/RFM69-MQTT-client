@@ -283,7 +283,7 @@ switch (mes.devID)					// devID indicates device (sensor) type
 case (1):						// polling interval in seconds
 if (mes.cmd == 0) {					// cmd == 0 means write a value
 	TXinterval = mes.intVal;			// change interval to radio packet value
-	if (TXinterval <5 && TXinterval !=0) TXinterval = 10;	// minimum interval is 10 seconds
+	if (TXinterval <10 && TXinterval !=0) TXinterval = 10;	// minimum interval is 10 seconds
 	if (setAck) send1 = true;			// send message if required
 #ifdef DEBUG
 	Serial.print("Setting interval to ");
