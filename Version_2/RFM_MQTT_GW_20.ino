@@ -101,18 +101,18 @@ int	curstat = 0;				// current polling interval in debug mode
 int	stat[] = {0,1,6,20};			// status 0 means no polling, 1, 6, 20 seconds interval
 #endif							
 
-int		dest;					// destination node for radio packet
-int     DID;                              // Device ID
-int 	error;						// Syntax error code
-long	lastMinute = -1;				// timestamp last minute
-long	upTime = 0;						// uptime in minutes
+int		dest;				// destination node for radio packet
+int     DID;                    		// Device ID
+int 	error;					// Syntax error code
+long	lastMinute = -1;			// timestamp last minute
+long	upTime = 0;				// uptime in minutes
 bool	Rstat = false;				// radio indicator flag
 bool	mqttCon = false;			// MQTT broker connection flag
 bool	respNeeded = false;			// MQTT message flag in case of radio connection failure
 bool	mqttToSend = false;			// message request issued by MQTT request
 bool	promiscuousMode = false;		// only receive closed network nodes
-bool	verbose = true;					// generate error messages
-bool	IntMess, RealMess, StatMess;	// types of messages
+bool	verbose = true;				// generate error messages
+bool	IntMess, RealMess, StatMess;		// types of messages
 long	onMillis;				// timestamp when radio LED was turned on
 char	*subTopic = "home/rfm_gw/sb/#";		// MQTT subscription topic ; direction is southbound
 char	*clientName = "RFM_gateway";		// MQTT system name of gateway
@@ -167,21 +167,21 @@ digitalWrite(R_LED, LOW);				// switch off radio indicator
 #endif
 
 	delay(1000);
-	mqttCon = 0;						// reset connection flag
-	while(mqttCon != 1){					// retry MQTT connection every 2 seconds
+	mqttCon = 0;					// reset connection flag
+	while(mqttCon != 1){				// retry MQTT connection every 2 seconds
 #ifdef DEBUG
 	Serial.println("connection failed...");
 #endif
-	mqttCon = mqttClient.connect(clientName);		// retry connection to broker
-	delay(2000);						// every 2 seconds
+	mqttCon = mqttClient.connect(clientName);	// retry connection to broker
+	delay(2000);					// every 2 seconds
 	}
 
-	if(mqttCon){						// Connected !
+	if(mqttCon){					// Connected !
 #ifdef DEBUG
 	Serial.println("got connection with MQTT server");
 #endif
-	digitalWrite(MQCON, HIGH);				// switch on MQTT connection indicator
-	mqttClient.subscribe(subTopic);				// subscribe to all southbound messages
+	digitalWrite(MQCON, HIGH);			// switch on MQTT connection indicator
+	mqttClient.subscribe(subTopic);			// subscribe to all southbound messages
 	}
 #ifdef DEBUG
 	else Serial.println("no connection with MQTT server");
@@ -210,7 +210,7 @@ if (Rstat) {						// turn off radio LED after 100 msec
 		}
 }
 
-if (lastMinute != (millis()/60000)) {		// another minute passed ?
+if (lastMinute != (millis()/60000)) {			// another minute passed ?
 	lastMinute = millis()/60000;
 	upTime++;
 	}
@@ -274,9 +274,9 @@ if (respNeeded && verbose) { 					// if not succeeded in sending packets after 5
 #endif
 }
  
-if (mqttToSend) mqttToSend = false;					// reset send trigger
+if (mqttToSend) mqttToSend = false;				// reset send trigger
 #ifdef DEBUG
-	if (msgToSend) msgToSend = false;				// reset debug send trigger
+	if (msgToSend) msgToSend = false;			// reset debug send trigger
 #endif
 }	// end sendMsg
 
@@ -314,47 +314,47 @@ else								// message size OK...
 	Serial.println();
 #endif	
 }
-DID = mes.devID;															// construct MQTT message, according to device ID
+DID = mes.devID;						// construct MQTT message, according to device ID
 
 IntMess = (DID==0 || DID==1 || DID==2 || DID==7 || (DID>=64 && DID<72));	// Integer in payload message
-RealMess = (DID==4 || (DID>=48 && DID <64));								// Float in payload message
-StatMess = (DID==5 || DID==6 || DID==8 || (DID>=16 && DID <32));			// Status in payload message
+RealMess = (DID==4 || (DID>=48 && DID <64));					// Float in payload message
+StatMess = (DID==5 || DID==6 || DID==8 || (DID>=16 && DID <32));		// Status in payload message
 
-if (IntMess) {																// put integer value in payload
+if (IntMess) {							// send integer value	load
 	sprintf(buff_mess, "%d",mes.intVal);
 	}
 
-if (RealMess) {																// put real value in payload
+if (RealMess) {							// send decimal value
 	dtostrf(mes.fltVal, 10,2, buff_mess);
-	while (buff_mess[0] == 32) {											// and trim leading spaces
+	while (buff_mess[0] == 32) {				// remove any leading spaces
 		for (int i =0; i<strlen(buff_mess); i++) {
 		buff_mess[i] = buff_mess[i+1];
 		}
 	}
 	}
 
-if (StatMess) {																// put status in payload
+if (StatMess) {							// put status in payload
 	if (mes.intVal == 1 )sprintf(buff_mess, "ON");
 	if (mes.intVal == 0 )sprintf(buff_mess, "OFF");
 	}
 
 switch (mes.devID)					
 {
-case (3):						// Node software version
+case (3):							// Node software version
 {int i; for (i=0; i<sizeof(mes.payLoad); i++){ 
 	buff_mess[i] = (mes.payLoad[i]); 
 }
 }
 break;
-case (40):						// Button pressed message
+case (40):							// Button pressed message
 {	sprintf(buff_mess, "BUTTON PRESSED");
 }
 break;
-case (92):						// invalid device message
+case (92):							// invalid device message
 {	sprintf(buff_mess, "NODE %d invalid device %d", mes.nodeID, mes.intVal);
 }
 break;
-case (99):						// wakeup message
+case (99):							// wakeup message
 {	sprintf(buff_mess, "NODE %d WAKEUP", mes.nodeID);
 }
 break;
@@ -367,9 +367,9 @@ Serial.print(": ");
 Serial.println(buff_mess);
 #endif
 
-mqttClient.publish(buff_topic,buff_mess);		// publish MQTT message in northbound topic
+mqttClient.publish(buff_topic,buff_mess);			// publish MQTT message in northbound topic
 
-if (radio.ACKRequested()) radio.sendACK();		// reply to any radio ACK requests
+if (radio.ACKRequested()) radio.sendACK();			// reply to any radio ACK requests
 
 }	// end processPacket
 
@@ -410,32 +410,32 @@ if (strlen(topic) == 27) {				// correct topic length ?
 	RealMess = (( DID==0 || DID==2 || DID==3 || DID==4 || (DID>=40 && DID<72))&& mes.cmd==1);
 	IntMess = (DID==1 || DID==7 || (DID >=32 && DID <40));
 	
-	if (dest == 1 && DID == 0) {							// gateway uptime wanted
+	if (dest == 1 && DID == 0) {					// gateway uptime wanted
 		sprintf(buff_mess,  "%d", upTime);	
 		sprintf(buff_topic, "home/rfm_gw/nb/node01/dev00");	// construct MQTT topic and message
-		mqttClient.publish(buff_topic,buff_mess);			// publish ...
+		mqttClient.publish(buff_topic,buff_mess);		// publish ...
 		error =0;
 		}
-	if (dest == 1 && DID == 3) {							// gateway version wanted
+	if (dest == 1 && DID == 3) {					// gateway version wanted
 		for (i=0; i<sizeof(VERSION); i++){ 
 		buff_mess[i] = (VERSION[i]); }
 		mes.payLoad[i] = '\0';
 		sprintf(buff_topic, "home/rfm_gw/nb/node01/dev03");	// construct MQTT topic and message
-		mqttClient.publish(buff_topic,buff_mess);			// publish ...
+		mqttClient.publish(buff_topic,buff_mess);		// publish ...
 		error =0;
 		}
-	if (dest>1 && StatMess) {								// node status device
+	if (dest>1 && StatMess) {					// node status device
 		mqttToSend = true; 
 		if (strPayload == "ON") mes.intVal = 1;			// payload value is state 
 		else  if (strPayload == "OFF") mes.intVal = 0;
-		else if (strPayload != "READ") { mqttToSend = false; error = 3;}	// invalid payload; do not process
+		else if (strPayload != "READ") { mqttToSend = false; error = 3;}// invalid payload; do not process
 		}
 	
-	if (dest>1 && RealMess) {								// node read device
+	if (dest>1 && RealMess) {					// node read device
 		mqttToSend = true; 
 		}
 	
-	if ( dest>1 && IntMess ) {								// node integer device
+	if ( dest>1 && IntMess ) {					// node integer device
 		if (mes.cmd == 0) mes.intVal = strPayload.toInt();	// timer/polling/Integer is in MQTT message
 		mqttToSend = true;
 		}
@@ -459,7 +459,7 @@ else {
 if ((error != 0) && verbose) { 					// in case of syntax error	
 	sprintf(buff_mess, "syntax error %d", error);	
 	sprintf(buff_topic, "home/rfm_gw/nb/node01/dev91");	// construct MQTT topic and message
-	mqttClient.publish(buff_topic,buff_mess);			// publish ...
+	mqttClient.publish(buff_topic,buff_mess);		// publish ...
 #ifdef DEBUG
 Serial.print("Syntax error code is: ");
 Serial.println(error);
