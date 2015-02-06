@@ -3,6 +3,14 @@ RFM69-MQTT-client
 
 Arduino - RFM69 based sensors and MQTT gateway 
 
+Changes in version 2:
+- increased data exchange data block
+- implemented standard device numbering
+- removed leading spaces in decimal sensor data
+- implemented uptime counter
+- implemented error checking & reporting
+- implemented uptime and version reporting in gateway
+
 The setup consists of two types of devices:
 
 - an end node that measures parameters, changes output states and communicates over radio with a central gateway
