@@ -82,13 +82,13 @@
 #define BTN2	1
 #define	ROWS	4					// # of rows on the LCD
 #define COLS	20					// # of columns
-#define HOLDOFF 10000				// blocking period between button messages
+#define HOLDOFF 10000					// blocking period between button messages
 
 //
 //	STARTUP DEFAULTS
 //
 long	TXinterval = 20;				// periodic transmission interval in seconds
-bool	setAck = true;				// flag for message on text message
+bool	setAck = true;					// flag for message on text message
 
 
 //
@@ -97,10 +97,10 @@ bool	setAck = true;				// flag for message on text message
 long	lastPeriod = -1;				// timestamp last transmission
 long 	lastBtnPress = -1;				// timestamp last buttonpress
 long	lastMinute = -1;				// timestamp last minute
-long	upTime = 0;						// uptime in minutes
-int		signalStrength;					// radio signal strength
-int		line;							// Display line
-int		i,length;
+long	upTime = 0;					// uptime in minutes
+int	signalStrength;					// radio signal strength
+int	line;						// Display line
+int	i,length;
 bool	send0, send1, send2, send3, send4;
 bool	send5, send40, send41;
 bool	send72, send92;					// message triggers
@@ -143,8 +143,8 @@ radio.encrypt(ENCRYPTKEY);				// set radio encryption
 radio.promiscuous(promiscuousMode);			// only listen to closed network
 wakeUp = true;						// send wakeup message
 
-lcd.begin(COLS, ROWS);						// set up the LCD's number of columns and rows: 
-lcd.print("Startup ");				// Print boot message to the LCD.
+lcd.begin(COLS, ROWS);					// set up the LCD's number of columns and rows: 
+lcd.print("Startup ");					// Print boot message to the LCD.
 lcd.print (VERSION);
 #ifdef DEBUG
 	lcd.setCursor(0,2);
@@ -171,17 +171,17 @@ if (receiveData()) parseCmd();				// receive and parse any radio input
 // This works NOT in debug mode; Tx and RX pins are in use !!!!!
 //
 #ifndef DEBUG
-	msgBlock = (millis() - lastBtnPress < HOLDOFF);		// hold-off time for additional button messages
+	msgBlock = (millis() - lastBtnPress < HOLDOFF);	// hold-off time for additional button messages
 	if (!msgBlock) {
 		curState = digitalRead(BTN1);
-		if (curState == LOW) {							// button pressed ?
-		lastBtnPress = millis();			// take timestamp
-		send40 = true;						// set button message flag
+		if (curState == LOW) {			// button pressed ?
+		lastBtnPress = millis();		// take timestamp
+		send40 = true;				// set button message flag
 		}
 		curState = digitalRead(BTN2);
-		if (curState == LOW) {							// button pressed ?
-		lastBtnPress = millis();			// take timestamp
-		send41 = true;						// set button message flag
+		if (curState == LOW) {			// button pressed ?
+		lastBtnPress = millis();		// take timestamp
+		send41 = true;				// set button message flag
 	}
 }
 #endif
@@ -189,7 +189,7 @@ if (receiveData()) parseCmd();				// receive and parse any radio input
 // UPTIME 
 //
 
-if (lastMinute != (millis()/60000)) {		// another minute passed ?
+if (lastMinute != (millis()/60000)) {			// another minute passed ?
 	lastMinute = millis()/60000;
 	upTime++;
 	}
@@ -278,7 +278,7 @@ send92 = false;
 
 switch (mes.devID)					// devID indicates device (sensor) type
 {
-case (0):							// uptime
+case (0):						// uptime
 if (mes.cmd == 1) send0 = true;
 break;
 case (1):						// polling interval in seconds
@@ -314,7 +314,7 @@ break;
 case (72):						// string
 if (mes.cmd == 0) {					// cmd == 0 means write a value
 	
-	String txtLine = String ((char*)mes.payLoad);		// convert into string
+	String txtLine = String ((char*)mes.payLoad);	// convert into string
 #ifdef DEBUG
 	Serial.print("Received string: ");
 	Serial.println(txtLine);
@@ -325,11 +325,11 @@ if (mes.cmd == 0) {					// cmd == 0 means write a value
 	if (txtLine.charAt(1)==58) {			// is the second character a colon ?
 		line = txtLine.charAt(0) - '0';		// get line number
 		txtLine = txtLine.substring(2);		// strip first 2 characters
-		txtLine = txtLine.substring(0,COLS);		// strip anything larger than linewidth
-		if (line >= 0 && line < ROWS) {			// valid line number ?
-			lcd.setCursor(0,line);				//set cursor on line
-			lcd.print(txtLine);					// print line
-			if (txtLine.length() <COLS) {		// fill remainder with spaces
+		txtLine = txtLine.substring(0,COLS);	// strip anything larger than linewidth
+		if (line >= 0 && line < ROWS) {		// valid line number ?
+			lcd.setCursor(0,line);		//set cursor on line
+			lcd.print(txtLine);		// print line
+			if (txtLine.length() <COLS) {	// fill remainder with spaces
 				for (i=txtLine.length(); i<COLS; i++) lcd.write(32);
 				}
 		}
@@ -338,7 +338,7 @@ if (mes.cmd == 0) {					// cmd == 0 means write a value
 }
 break;
 
-default: send92 = true;				// no valid device parsed
+default: send92 = true;					// no valid device parsed
 }
 }	// end parseCmd
 
@@ -365,7 +365,7 @@ if (wakeUp) {						// send wakeUp call
 }
 if (send0) {
 	mes.devID = 0;
-	mes.intVal = upTime;			// minutes uptime
+	mes.intVal = upTime;				// minutes uptime
 	send0 = false;
 	txRadio();
 }
