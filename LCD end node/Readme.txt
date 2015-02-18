@@ -2,13 +2,13 @@ RFM-MQTT-LCD Release 1.0
 
 by Computourist@gmail.com Feb 2015
 
-This end node has and LCD display and two buttons. 
+This end node has an LCD display and two buttons. 
 
 The display is of type HD44780 and is available in different sizes and colors.
-The number of columns and rows can be adjusted, accoridng to display type.
-Connection to the Arduino are mentioned in the heading of the sketch.
+The number of columns and rows can be adjusted, according to display type.
+Connections to the Arduino are mentioned in the heading of the sketch.
 
-The message for displaying a text on the display is:
+The MQTT-message for displaying a text on the display is:
 
 topic: home/rfm_gw/sb/nodexx/dev72
 message: y:message text					where y is the line number.
