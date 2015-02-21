@@ -3,12 +3,12 @@ RFM69-MQTT-client
 
 Arduino - RFM69 based sensors and MQTT gateway 
 
-Changes in version 2.1:
+Changes in Gateway version 2.1:
 - uniform handling of binary input devices
 - transparant exchange of string data (device 72) added
 - minor bug fixing
 
-Changes in version 2:
+Changes in Gateway version 2:
 - increased data exchange data block
 - implemented standard device numbering
 - removed leading spaces in decimal sensor data
