@@ -15,13 +15,16 @@ in the openhab Sitemap the following frame should be included to show the state 
 
 Frame label="Contacts" { Text item=window }
 
-
 - fixed RSSI reporting
 Originally the end node reported on signal strength. 
 As long as no packets were being received from the gateway its value would remain constant.
 Reporting RSSI by means of the end-node transmission interval would therefor always report the same value.
 RSSI is now calculated by the reception strength of packets received in the gateway. 
 Every time a packet is received from the end node (whether in push- or pull mode) a new and actual value is reported.
+
+- partly removed DEBUG code
+Memory restrictions forced the removal of part of the debug code. 
+Voltage reporting by entering 'v' on serial input was removed.
 
 Note that these changes should also be reflected in end nodes that have binary input:
 - LCD node from version 2.0
