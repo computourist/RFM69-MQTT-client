@@ -1,3 +1,13 @@
+RFM-MQTT-LCD Release 2.0 
+
+changed the way binary inputs behave. 
+A message is sent at every state change, ON or OFF depending on the state of the binary input.
+This end node will function with gateway V2.2.
+
+See description of Gateway 2.2 on how to configure binary inputs in openhab.
+
+
+
 RFM-MQTT-LCD Release 1.0 
 
 by Computourist@gmail.com Feb 2015
