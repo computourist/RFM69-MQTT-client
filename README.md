@@ -3,6 +3,11 @@ RFM69-MQTT-client
 
 Arduino - RFM69 based sensors and MQTT gateway 
 
+Changes in Gateway version 2.2:
+- changed handling of binary input devices to improve compatibility with Openhab
+- improved RSSI reporting
+
+
 Changes in Gateway version 2.1:
 - uniform handling of binary input devices
 - transparant exchange of string data (device 72) added
