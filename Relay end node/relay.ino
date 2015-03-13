@@ -44,6 +44,7 @@ global variables
 int 	TXinterval = 20;			// periodic transmission interval in seconds
 bool	setACK = false;				// send ACK message on 'SET' request
 bool    toggle = true;
+bool    updatesSent = false;
 
 volatile bool btnPressed = false;
 volatile long lastBtnPress = -1;		// timestamp last buttonpress
@@ -64,12 +65,28 @@ Device verDev(3, false);
 Device voltDev(4, false, readVoltage);
 Device ackDev(5, false, readACK, writeACK);
 Device toggleDev(6, false, readToggle, writeToggle);
-Device relayDev(17, true, readRelay, writeRelay);
+Device relayDev(17, false, readRelay, writeRelay);
 
-Device devices[] = {uptimeDev, txIntDev, rssiDev, verDev,
+static Device devices[] = {uptimeDev, txIntDev, rssiDev, verDev,
                     voltDev, ackDev, toggleDev, relayDev};
                     
 RFM69 radio;
+
+/*******************************************
+put non-system read/write functions here
+********************************************/
+
+void readRelay(Message *mess){
+  digitalRead(RELAY) ? mess->intVal = 1 : mess->intVal = 0;
+}
+
+void writeRelay(const Message *mess){
+  digitalWrite(RELAY, mess->intVal);
+}
+
+/*********************************************
+Setup
+*********************************************/
 
 void setup() {
   //disable watchdog timer during setup
@@ -126,53 +143,71 @@ void loop() {
   
   if (radio.receiveDone()){
     if (radio.DATALEN != sizeof(Message)){
-      //invalid packet format
+      Serial.println("INVALID PACKET");
     }else{
       Message mess = *(Message*)radio.DATA;
       if (radio.ACKRequested()){
+        Serial.println("sending ack");
         radio.sendACK();
+      }else{
+        Serial.println("ack not requested");
       }
       bool match = false;
       
       //check if message is for any devices registered on node
-      for (int i = 0; i <= sizeof(devices) / sizeof(Device); i++){
+      for (int i = 0; i < sizeof(devices) / sizeof(Device); i++){
         if (mess.devID == devices[i].id){
           match = true;
           reply.devID = devices[i].id;
           //write for cmd 0
           if (mess.cmd == 0){
             devices[i].write(&mess);
+            #ifdef DEBUG
+            Serial.print("writing node ");
+            Serial.print(mess.nodeID);
+            Serial.print(" dev ");
+            Serial.println(mess.devID);
+            #endif
             if (setACK){
+              Serial.println(reply.devID);
               devices[i].read(&reply);
               txRadio(&reply);
             }
           //read for cmd 1
           }else if (mess.cmd == 1){
             devices[i].read(&reply);
+            #ifdef DEBUG
+            Serial.print("reading node ");
+            Serial.print(reply.nodeID);
+            Serial.print(" dev ");
+            Serial.println(reply.devID);
+            #endif
             txRadio(&reply);
           }
         }
       }
-      
-      //check if any devices need to transmit periodic info
-      if (wdtCounter % TXinterval == 0){
-        Serial.println("Sending periodic updates");
-        for (int i = 0; i <= sizeof(devices) / sizeof(Device); i++){
-          if (devices[i].setTX){
-            reply = DEFAULT_MSG;
-            reply.devID = devices[i].id;
-            devices[i].read(&reply);
-            txRadio(&reply);
-          }
-        }
-      }
-  
       //invalid device id in message
       if (!match){
         reply.devID = 92;
         txRadio(&reply);
       }
     }
+  }
+  
+  //check if any devices needs to transmit periodic info
+  if (!updatesSent && wdtCounter % TXinterval == 0){
+    Serial.println("Sending periodic updates");
+    for (int i = 0; i <= sizeof(devices) / sizeof(Device); i++){
+      if (devices[i].setTX){
+        reply = DEFAULT_MSG;
+        reply.devID = devices[i].id;
+        devices[i].read(&reply);
+        txRadio(&reply);
+      }
+    }
+    updatesSent = true;
+  }else if(wdtCounter % TXinterval != 0){
+    updatesSent = false;
   }
   
   //if button was pressed and enabled toggle the relay
@@ -185,25 +220,26 @@ void loop() {
   }
   btnPressed = false;
 
-  #ifdef DEBUG
+  //Disabling sleep for now, was making comms too unreliable
+  /*#ifdef DEBUG
     //make sure serial tx is done before sleeping
     Serial.flush();
     while ((UCSR0A & _BV (TXC0)) == 0){}
   #endif
+  */
   
   //put chip to sleep until button is pressed, packet is RX, or watchdog timer fires
-  sleep();
+  //sleep();
 }
 
 void txRadio(Message * mess){
-  if (radio.sendWithRetry(GATEWAYID, mess, sizeof(*mess), RETRIES, ACK_TIME))
-  #ifdef DEBUG
-    {Serial.print(" message ");
-    Serial.print(mess->devID);
-    Serial.println(" sent...");}
-    else Serial.println("No connection...")
-  #endif
-;}
+  Serial.print(" message ");
+  Serial.print(mess->devID);
+  Serial.println(" sent...");
+  if (!radio.sendWithRetry(GATEWAYID, mess, sizeof(*mess), RETRIES, ACK_TIME)){
+    Serial.println("No connection...");
+  }
+}
 
 void readUptime(Message *mess){
   mess->intVal = wdtCounter / 60;
@@ -248,14 +284,6 @@ void readToggle(Message *mess){
 
 void writeToggle(const Message *mess){
   mess->intVal ? toggle = true: toggle = false;
-}
-
-void readRelay(Message *mess){
-  digitalRead(RELAY) ? mess->intVal = 1 : mess->intVal = 0;
-}
-
-void writeRelay(const Message *mess){
-  digitalWrite(RELAY, mess->intVal);
 }
 
 void sleep(){
