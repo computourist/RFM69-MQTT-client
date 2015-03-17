@@ -31,14 +31,14 @@
 //             Reader/PCD   	           Uno      
 // Signal      Pin          Pin           Pin       
 // ------------------------------------------------
-// INT0			-			DIO0		D2
-// REDLED		-			-			D7
-// SPI SS RFM	-			NSS			D4
-// RST/Reset	RST			-			D9
-// SPI SS RFID	SDA(SS)		-			D10
-// SPI MOSI		MOSI		MOSI		D11
-// SPI MISO		MISO		MISO		D12
-// SPI SCK		SCK			SCK			D13
+// INT0		-		DIO0		D2
+// REDLED	-		-		D7
+// SPI SS RFM	-		NSS		D4
+// RST/Reset	RST		-		D9
+// SPI SS RFID	SDA(SS)		-		D10
+// SPI MOSI	MOSI		MOSI		D11
+// SPI MISO	MISO		MISO		D12
+// SPI SCK	SCK		SCK		D13
 //
 //
 //
@@ -85,7 +85,7 @@
 #define RFM_SS		4				// Slave Select pin RFM69
 #define REDLED		7				// Red LED pin
 #define SERIAL_BAUD 115200
-#define HOLDOFF 2000				// blocking period between RFID detection
+#define HOLDOFF 2000					// blocking period between RFID detection
 
 //
 //	STARTUP DEFAULTS
@@ -97,15 +97,15 @@ long 	TXinterval = 20;				// periodic transmission interval in seconds
 //	VARIABLES
 //
 long	lastPeriod = -1;				// timestamp last transmission
-long 	lastOn = -1;				// timestamp last buttonpress
+long 	lastOn = -1;					// timestamp last buttonpress
 long	lastMinute = -1;				// timestamp last minute
-long	upTime = 0;						// uptime in minutes
+long	upTime = 0;					// uptime in minutes
 
-int		signalStrength;					// radio signal strength
+int	signalStrength;					// radio signal strength
 bool	setAck = false;					// send ACK message on 'SET' request
 bool	send0, send1, send2, send3, send4;
 bool	send5, send7;
-bool	send92;							// message triggers
+bool	send92;						// message triggers
 bool	promiscuousMode = false; 			// only listen to nodes within the closed network
 bool 	wakeUp = true;					// wakeup flag
 long	lastCardDetect=-1;				// timestamp of last card detection
@@ -113,7 +113,7 @@ bool	cardDetect = false;				// flag to indicate an RFID card has been detected
 bool	block=false;					// block RFID reader during holdoff
 bool	redLedState=false;				// state of red LED
 unsigned char	UID[5] ;				// holds RFID code in numbers
-String RFID_Code;						// holds RFID code in ASCII
+String RFID_Code;					// holds RFID code in ASCII
 
 
 
@@ -130,7 +130,7 @@ Message mes;
 
 
 
-MFRC522 mfrc522(RFID_SS, RFID_RST);	// Create MFRC522 instance
+MFRC522 mfrc522(RFID_SS, RFID_RST);			// Create MFRC522 instance
 
 RFM69 radio;						// Create RFM69 instance
 
@@ -141,9 +141,9 @@ void setup() {
 #ifdef DEBUG
 	Serial.begin(SERIAL_BAUD);
 #endif
-pinMode(REDLED, OUTPUT);							// set LED output
+pinMode(REDLED, OUTPUT);				// set LED output
 digitalWrite(REDLED, LOW);
-radio.setCS(RFM_SS);								// set SS pin
+radio.setCS(RFM_SS);					// set SS pin
 radio.initialize(FREQUENCY,NODEID,NETWORKID);		// initialise radio 
 #ifdef IS_RFM69HW
 radio.setHighPower(); 					// only for RFM69HW!
@@ -175,13 +175,13 @@ if (!block) {
 			redLedState = false;
 			digitalWrite(REDLED,LOW);
 		}
-	if ( mfrc522.PICC_IsNewCardPresent()) {	// Look for new cards
+	if ( mfrc522.PICC_IsNewCardPresent()) {			// Look for new cards
 			lastCardDetect = millis();
 			redLedState = true;
 			digitalWrite(REDLED,HIGH);  
 		}
 
-	if ( mfrc522.PICC_ReadCardSerial()) { // Select one of the cards
+	if ( mfrc522.PICC_ReadCardSerial()) { 			// Select one of the cards
 			cardDetect = true;
 			Serial.println("Scanned PICC's UID:");
 			for (int i = 0; i < 4; i++) { //
@@ -191,10 +191,10 @@ if (!block) {
 			}
 
 	Serial.println("");
-	mfrc522.PICC_HaltA(); 				// Stop reading
+	mfrc522.PICC_HaltA(); 					// Stop reading
 		}
 
-	}
+	}	
 
 // RECEIVE radio input
 //
