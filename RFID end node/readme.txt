@@ -18,7 +18,7 @@ Hardware used is a 3.3 Volt 8MHz arduino Pro; this is easier to interface to RFM
 Power requirements dictate that a reparate 3.3 Volts regulator is used to power both RFM69 and RFID reader 
 A RED led (D7) is used to indicate an RFID card has been detected and read. It will stay on during HOLDOFF msec.
  
-Whenever an RFID card is detected a message will be generated with topic: 
+Whenever an RFID card is detected am MQTT message will be generated with topic: 
 
 	home/rfm_gw/nb/node05/dev72 
 
