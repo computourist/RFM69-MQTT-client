@@ -13,7 +13,7 @@ This serial link command would toggle push interval. It was removed to free up m
 
 
 
-_______________________________________________________________________________________________________________
+___________________________________________________________________________________________________________
 RFM-MQTT-Gateway Release 2.2 
 
 by Computourist@gmail.com March 2015
@@ -47,7 +47,7 @@ Note that these changes should also be reflected in end nodes that have binary i
 - DHT node from version 2.1
 
 
-_______________________________________________________________________________________________________________
+___________________________________________________________________________________________________________
 RFM-MQTT-Gateway Release 2.1 
 
 by Computourist@gmail.com Feb 2015
