@@ -50,7 +50,7 @@
 //	version 2.0 increased payload size; implemented node uptime; standard device type convention; error handling .
 //	version 2.1 removed device 8; changed handling of device 40; compatible with gateway V2.2	; march 2015
 //	version 2.2 fixed bug in function TXradio that prevented retransmission of radio packets ; 
-//				implemented device 9 to show the number of retransmissions needed on the radio link; oct 2015
+//		    implemented device 9 to show the number of retransmissions on the radio link; oct 2015
 
 #include <RFM69.h>
 #include <SPI.h>
@@ -110,7 +110,7 @@ bool 	wakeUp = true;					// wakeup flag
 bool	timerOnButton = false;				// timer output on button press
 bool	msgBlock = false;				// flag to hold button messages to prevent overload
 bool	retx = true; 					// flag to signal retransmission
-int	numtx;							// number of retransmissions
+int	numtx;						// number of retransmissions
 
 typedef struct {					// Radio packet format
 int	nodeID;						// node identifier
@@ -165,21 +165,21 @@ if (receiveData()) parseCmd();				// receive and parse any radio input
 
 // DETECT INPUT CHANGE
 //
-curState = digitalRead(BTN);							// Read button
+curState = digitalRead(BTN);					// Read button
 msgBlock = ((millis() - lastBtnPress) < HOLDOFF);		// hold-off time for additional button messages
 if (!msgBlock &&  (curState != lastState)) {			// input changed ?
 	delay(5);
-	lastBtnPress = millis();							// take timestamp
-//	send40 = true;										// set button message flag
+	lastBtnPress = millis();				// take timestamp
+//	send40 = true;						// set button message flag
 	if (curState == LOW) {
-	if (toggleOnButton) {								// button in toggle state ?
-	ACT1State = !ACT1State; 							// toggle output
+	if (toggleOnButton) {					// button in toggle state ?
+	ACT1State = !ACT1State; 				// toggle output
 	digitalWrite(ACT1, ACT1State);
-	send16 = true;										// send message on status change
+	send16 = true;						// send message on status change
 	} else
-	if (TIMinterval > 0 && !timerOnButton) {			// button in timer state ?
-	timerOnButton = true;								// start timer interval
-	ACT1State = HIGH;									// switch on ACT1
+	if (TIMinterval > 0 && !timerOnButton) {		// button in timer state ?
+	timerOnButton = true;					// start timer interval
+	ACT1State = HIGH;					// switch on ACT1
 	digitalWrite(ACT1, ACT1State);
 	}}
 lastState = curState;
@@ -188,11 +188,11 @@ lastState = curState;
 // TIMER CHECK
 //
 
-if (TIMinterval > 0 && timerOnButton)			// =0 means no timer
+if (TIMinterval > 0 && timerOnButton)				// =0 means no timer
 {	
 	if ( millis() - lastBtnPress > TIMinterval*1000) {	// timer expired ?
-	timerOnButton = false;				// then end timer interval 
-	ACT1State = LOW;				// and switch off Actuator
+	timerOnButton = false;					// then end timer interval 
+	ACT1State = LOW;					// and switch off Actuator
 	digitalWrite(ACT1, ACT1State);
 	}
 }
@@ -200,7 +200,7 @@ if (TIMinterval > 0 && timerOnButton)			// =0 means no timer
 // UPTIME 
 //
 
-if (lastMinute != (millis()/60000)) {			// another minute passed ?
+if (lastMinute != (millis()/60000)) {				// another minute passed ?
 	lastMinute = millis()/60000;
 	upTime++;
 	}
@@ -211,17 +211,17 @@ if (lastMinute != (millis()/60000)) {			// another minute passed ?
 if (TXinterval > 0)
 {
 int currPeriod = millis()/(TXinterval*1000);
-if (currPeriod != lastPeriod) {				// interval elapsed ?
+if (currPeriod != lastPeriod) {					// interval elapsed ?
 	lastPeriod = currPeriod;
 	
 // list of sensordata to be sent periodically..
 // remove comment to include parameter in transmission
  
-//	send1 = true;					// send transmission interval
-//	send2 = true; 					// signal strength
-//	send4 = true;					// voltage level
-send9 = true;						// number of retransmissions
-//	send16 = true;					// output state
+//	send1 = true;						// send transmission interval
+//	send2 = true; 						// signal strength
+//	send4 = true;						// voltage level
+//	send9 = true;						// number of retransmissions
+	send16 = true;						// output state
 	
 	}
 }
@@ -229,7 +229,7 @@ send9 = true;						// number of retransmissions
 // SEND RADIO PACKETS
 //
 
-sendMsg();						// send any radio messages 
+sendMsg();							// send any radio messages 
 
 }		// end loop
 
@@ -243,9 +243,9 @@ sendMsg();						// send any radio messages
 
 bool receiveData() {
 bool validPacket = false;
-if (radio.receiveDone())				// check for received packets
+if (radio.receiveDone())					// check for received packets
 {
-if (radio.DATALEN != sizeof(mes))			// wrong message size means trouble
+if (radio.DATALEN != sizeof(mes))				// wrong message size means trouble
 #ifdef DEBUG
 	Serial.println("invalid message structure..")
 #endif
@@ -253,7 +253,7 @@ if (radio.DATALEN != sizeof(mes))			// wrong message size means trouble
 else
 {
 	mes = *(Message*)radio.DATA;
-	validPacket = true;				// YES, we have a packet !
+	validPacket = true;					// YES, we have a packet !
 	signalStrength = radio.RSSI;
 #ifdef DEBUG
 	Serial.print(mes.devID);
@@ -270,8 +270,8 @@ else
 #endif	
 }
 }
-if (radio.ACKRequested()) radio.sendACK();		// respond to any ACK request
-return validPacket;					// return code indicates packet received
+if (radio.ACKRequested()) radio.sendACK();			// respond to any ACK request
+return validPacket;						// return code indicates packet received
 }		// end recieveData
 
 //
@@ -279,8 +279,8 @@ return validPacket;					// return code indicates packet received
 //==============		PARSECMD: analyse messages and execute commands received from gateway
 //
 
-void parseCmd() {					// parse messages received from the gateway
-send0 = false;						// initialise all send triggers
+void parseCmd() {						// parse messages received from the gateway
+send0 = false;							// initialise all send triggers
 send1 = false;
 send2 = false;
 send3 = false; 
@@ -294,16 +294,16 @@ send40 = false;
 
 send92 = false;
 
-switch (mes.devID)					// devID indicates device (sensor) type
+switch (mes.devID)						// devID indicates device (sensor) type
 {
-case (0):						// uptime
+case (0):							// uptime
 if (mes.cmd == 1) send0 = true;
 break;
-case (1):						// polling interval in seconds
-if (mes.cmd == 0) {					// cmd == 0 means write a value
-	TXinterval = mes.intVal;			// change interval to radio packet value
+case (1):							// polling interval in seconds
+if (mes.cmd == 0) {						// cmd == 0 means write a value
+	TXinterval = mes.intVal;				// change interval to radio packet value
 	if (TXinterval <10 && TXinterval !=0) TXinterval = 10;	// minimum interval is 10 seconds
-	if (setAck) send1 = true;			// send message if required
+	if (setAck) send1 = true;				// send message if required
 #ifdef DEBUG
 	Serial.print("Setting interval to ");
 	Serial.print(TXinterval);
@@ -312,60 +312,60 @@ if (mes.cmd == 0) {					// cmd == 0 means write a value
 }
 else send1 = true;					// cmd == 1 is a read request, so send polling interval 
 break;
-case (2): 						// signal strength
+case (2): 							// signal strength
 if (mes.cmd == 1) send2 = true;
 break;
-case (3): 						// software version
+case (3): 							// software version
 if (mes.cmd == 1) send3 = true;
 break;
-case (4): 						// battery level
+case (4): 							// battery level
 if (mes.cmd == 1) send4 = true;
 break;
-case (5): 						// set ack status
+case (5): 							// set ack status
 if (mes.cmd == 0) {
 	if (mes.intVal == 0) setAck = false;
 	if (mes.intVal == 1) setAck = true;
-	if (setAck) send5 = true;			// acknowledge message ?
+	if (setAck) send5 = true;				// acknowledge message ?
 }
-else send5 = true;					// read request means schedule a message
+else send5 = true;						// read request means schedule a message
 break;
-case (6): 						// set toggle
+case (6): 							// set toggle
 if (mes.cmd == 0) {
 	if (mes.intVal == 0) toggleOnButton = false;
 	if (mes.intVal == 1) toggleOnButton = true;
-	if (setAck) send6 = true;			// acknowledge message ?
+	if (setAck) send6 = true;				// acknowledge message ?
 }
 else send6 = true;
 break;
-case (7):						// timer interval in seconds
-if (mes.cmd == 0) {					// cmd == 0 means write a value
-	TIMinterval = mes.intVal;			// change interval 
+case (7):							// timer interval in seconds
+if (mes.cmd == 0) {						// cmd == 0 means write a value
+	TIMinterval = mes.intVal;				// change interval 
 	if (TIMinterval <5 && TIMinterval !=0) TIMinterval = 5;
-	if (setAck) send7 = true;			// acknowledge message ?
-}							// cmd == 1 means read a value
-else send7 = true;					// send timing interval 
+	if (setAck) send7 = true;				// acknowledge message ?
+}								// cmd == 1 means read a value
+else send7 = true;						// send timing interval 
 break;
-case (9):						// retransmissions
+case (9):							// retransmissions
 if (mes.cmd == 1) send9 = true;
 break;
-case (16):						// output
-if (mes.cmd == 0) {					// cmd == 0 means write
+case (16):							// output
+if (mes.cmd == 0) {						// cmd == 0 means write
 	if(mes.intVal == 0 || mes.intVal == 1) {
 	ACT1State = mes.intVal;
 	digitalWrite(ACT1, ACT1State);
-	if (setAck) send16 = true;			// acknowledge message ?
+	if (setAck) send16 = true;				// acknowledge message ?
 #ifdef DEBUG	
 	Serial.print("Set LED to ");
 	Serial.println(ACT1State);
 #endif
 }}
-else send16 = true;					// cmd == 1 means read
+else send16 = true;						// cmd == 1 means read
 break;
-case (40):						// binary input
+case (40):							// binary input
 if (mes.cmd == 1) send40 = true;
 break;
 
-default: send92 = true;					// no valid device parsed
+default: send92 = true;						// no valid device parsed
 }
 }	// end parseCmd
 
@@ -374,97 +374,97 @@ default: send92 = true;					// no valid device parsed
 //======================		SENDMSG: sends messages that are flagged for transmission
 //
 
-void sendMsg() {					// prepares values to be transmitted
-bool tx = false; 					// transmission flag
+void sendMsg() {						// prepares values to be transmitted
+bool tx = false; 						// transmission flag
 mes.nodeID=NODEID;
 mes.intVal = 0;
 mes.fltVal = 0;
-mes.cmd = 0;						// '0' means no action needed in gateway
+mes.cmd = 0;							// '0' means no action needed in gateway
 int i;
 for ( i = 0; i < sizeof(VERSION); i++){
 mes.payLoad[i] = VERSION[i];	}
-mes.payLoad[i] = '\0';					// software version in payload string
+mes.payLoad[i] = '\0';						// software version in payload string
 
-if (wakeUp) {						// send wakeUp call 
+if (wakeUp) {							// send wakeUp call 
 	mes.devID = 99;	
-	wakeUp = false;					// reset transmission flag for this message
-	txRadio();					// transmit
+	wakeUp = false;						// reset transmission flag for this message
+	txRadio();						// transmit
 }
 if (send0) {
 	mes.devID = 0;
-	mes.intVal = upTime;				// minutes uptime
+	mes.intVal = upTime;					// minutes uptime
 	send0 = false;
 	txRadio();
 }
-if (send1) {						// transmission interval
+if (send1) {							// transmission interval
 	mes.devID = 1;
-	mes.intVal = TXinterval;			// seconds (integer)
+	mes.intVal = TXinterval;				// seconds (integer)
 	send1 = false;
 	txRadio();
 }
 if (send2) {
 	mes.devID = 2;
-	mes.intVal = signalStrength;			// signal strength (integer)
+	mes.intVal = signalStrength;				// signal strength (integer)
 	send2 = false;
 	txRadio();
 }
-if (send3) {						// node software version (string)
-	mes.devID = 3;					// already stored in payload string
+if (send3) {							// node software version (string)
+	mes.devID = 3;						// already stored in payload string
 	send3 = false;
 	txRadio();
 }
-if (send4) {						// measure voltage..
+if (send4) {							// measure voltage..
 	mes.devID = 4;	
-	long result;					// Read 1.1V reference against AVcc
+	long result;						// Read 1.1V reference against AVcc
 	ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
-	delay(2);					// Wait for Vref to settle
-	ADCSRA |= _BV(ADSC);				// Convert
+	delay(2);						// Wait for Vref to settle
+	ADCSRA |= _BV(ADSC);					// Convert
 	while (bit_is_set(ADCSRA,ADSC));
 	result = ADCL;
 	result |= ADCH<<8;
-	result = 1126400L / result; 			// Back-calculate in mV
-	mes.fltVal = float(result/1000.0);		// Voltage in Volt (float)
+	result = 1126400L / result; 				// Back-calculate in mV
+	mes.fltVal = float(result/1000.0);			// Voltage in Volt (float)
 	txRadio();
 	send4 = false;
 }
-if (send5) {						// Acknowledge on 'SET'
+if (send5) {							// Acknowledge on 'SET'
 	mes.devID = 5;
-	if (setAck) mes.intVal = 1; else mes.intVal = 0;// state (integer)
+	if (setAck) mes.intVal = 1; else mes.intVal = 0;	// state (integer)
 	send5 = false;
 	txRadio();
 }
-if (send6) {						// Toggle on Buttonpress 
+if (send6) {							// Toggle on Buttonpress 
 	mes.devID = 6;
-	if (toggleOnButton) mes.intVal = 1; 		// read state of toggle flag
-	else mes.intVal = 0;				// state (integer)
+	if (toggleOnButton) mes.intVal = 1; 			// read state of toggle flag
+	else mes.intVal = 0;					// state (integer)
 	send6 = false;
 	txRadio();
 }
-if (send7) {						// timer interval
+if (send7) {							// timer interval
 	mes.devID = 7;
-	mes.intVal = TIMinterval;			// seconds (integer)
+	mes.intVal = TIMinterval;				// seconds (integer)
 	send7 = false;
 	txRadio();
 }
-if (send9) {						// number of retransmissions
+if (send9) {							// number of retransmissions
 	mes.devID = 9;
-	mes.intVal = numtx;			// number (integer)
+	mes.intVal = numtx;					// number (integer)
 	send9 = false;
 	txRadio();
 }
-if (send16) {						// state of Actuator 1
+if (send16) {							// state of Actuator 1
 	mes.devID = 16;
-	mes.intVal = ACT1State;				// state (integer)
+	mes.intVal = ACT1State;					// state (integer)
 	send16 = false;
 	txRadio();
 }
-if (send40) {						// Binary input read
+if (send40) {							// Binary input read
 	mes.devID = 40;
-	if (curState == LOW) mes.intVal = 1;					// state (integer)
+	if (curState == LOW) mes.intVal = 1;			// state (integer)
 	send40 = false;
 	txRadio();
 }
-if (send92) {						// error message invalid device
+if (send92) {							// error message invalid device
 	mes.intVal = mes.devID;
 	mes.devID = 92;
         send92 = false;
@@ -477,7 +477,7 @@ if (send92) {						// error message invalid device
 //=======================		TXRADIO
 //
 
-void txRadio()						// Transmits the 'mes'-struct to the gateway
+void txRadio()							// Transmits the 'mes'-struct to the gateway
 {
 retx = true;
 int i = 0;
