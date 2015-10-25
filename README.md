@@ -3,6 +3,11 @@ RFM69-MQTT-client
 
 Arduino - RFM69 based sensors and MQTT gateway 
 
+Changes in Gateway version 2.3:
+- implemented system device 9: number of retransmissions needed in the radio link
+- removed some of the debug code as a result of memory constraints
+
+
 Changes in Gateway version 2.2:
 - changed handling of binary input devices to improve compatibility with Openhab
 - improved RSSI reporting
