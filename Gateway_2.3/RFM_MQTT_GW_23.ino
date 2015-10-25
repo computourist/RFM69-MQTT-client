@@ -51,9 +51,9 @@
 // version 2.0 - increased payload size; standard device types; trim float values; uptime & version function gateway;	Jan 2015
 // version 2.1 - implemented string device 72; devices 40-48 handled uniformly		Feb 2015
 // version 2.2 - changed handling of binary inputs to accomodate Openhab: message for ON and OFF on statechange; 
-//			   - RSSI value changed to reception strength in the gateway giving a more accurate and uptodate value ; March 2015
+//	       - RSSI value changed to reception strength in the gateway giving a more accurate and uptodate value ; March 2015
 // version 2.3 - System device 9 (number of retransmissions) implemented in gateway	; 
-//			   - Deleted debug option 's' to toggle push interval due to memory constraints;  Oct 2015
+//	       - Deleted debug option 's' to toggle push interval due to memory constraints;  Oct 2015
 
 
 #include <RFM69.h>
@@ -61,7 +61,7 @@
 #include <Ethernet.h>
 #include <PubSubClient.h>
 
-#define DEBUG					// uncomment for debugging
+#define DEBUG						// uncomment for debugging
 #define VERSION "GW V2.3"
 
 // Ethernet settings
@@ -105,7 +105,7 @@ bool	act1Stat = false;			// remember LED state in debug mode
 bool	msgToSend = false;			// message request by debug action
 #endif							
 
-int	dest;				// destination node for radio packet
+int	dest;					// destination node for radio packet
 int     DID;                    		// Device ID
 int 	error;					// Syntax error code
 long	lastMinute = -1;			// timestamp last minute
@@ -322,8 +322,8 @@ DID = mes.devID;						// construct MQTT message, according to device ID
 
 IntMess = (DID==0 || DID==1 || DID==7 || DID==9 || (DID>=64 && DID<72));	// Integer in payload message
 RealMess = (DID==4 || (DID>=48 && DID <64));					// Float in payload message
-StatMess = (DID==5 || DID==6 || DID==8 || (DID>=16 && DID <32) || (DID>=40 && DID <48));		// Status in payload message
-StrMess = (DID==3 || DID==72);			// String in payload
+StatMess = (DID==5 || DID==6 || DID==8 || (DID>=16 && DID <32) || (DID>=40 && DID <48));// Status in payload message
+StrMess = (DID==3 || DID==72);					// String in payload
 
 if (IntMess) {							// send integer value	load
 	sprintf(buff_mess, "%d",mes.intVal);
@@ -394,7 +394,7 @@ void mqtt_subs(char* topic, byte* payload, unsigned int length) {
 	mes.fltVal = 0;
 	mes.intVal = 0;
 	mqttToSend = false;				// not a valid request yet...
-	error = 4;						// assume invalid device until proven otherwise
+	error = 4;					// assume invalid device until proven otherwise
 
 #ifdef DEBUG
 	Serial.print("Topic received from Mosquitto:   ");
@@ -438,7 +438,7 @@ if (strlen(topic) == 27) {				// correct topic length ?
 		}
 	if (dest>1 && (DID >=40 && DID <48)) {
 		if (strPayload == "READ") mqttToSend = true; 
-		else {mqttToSend = false; error = 3;}		// invalid payload; do not process
+		else {mqttToSend = false; error = 3;}			// invalid payload; do not process
 		}
 	if (dest>1 && RealMess) {					// node read device
 		mqttToSend = true; 
@@ -457,7 +457,7 @@ if (strlen(topic) == 27) {				// correct topic length ?
 		}
 	
 	if (mqttToSend && (error == 4)) error = 0;		// valid device has been selected, hence error = 0
-	respNeeded = mqttToSend;			// valid request needs radio response
+	respNeeded = mqttToSend;				// valid request needs radio response
 #ifdef DEBUG
 	Serial.println(strPayload);
 	Serial.print("Value is:  ");
@@ -502,7 +502,7 @@ mes.devID = 0;
 mes.intVal = 0;
 mes.fltVal = 0;
 mes.cmd = 0;
-if (input == 'l')						// toggle LED
+if (input == 'l')				// toggle LED
 {
 	msgAvail = true;
 	respNeeded = true;
