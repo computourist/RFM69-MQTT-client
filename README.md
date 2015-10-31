@@ -12,6 +12,7 @@ LCD	  2.0	  2.1
 RC	  1.0	  2.0
 RFID	1.0	  1.0
 
+
 Changes in Gateway version 2.3:
 - implemented system device 9: number of retransmissions needed in the radio link
 - removed some of the debug code as a result of memory constraints
