@@ -1,3 +1,11 @@
+RFM-MQTT-LCD Release 2.1 
+by Computourist@gmail.com Oct 2015
+
+Made this node compatible to gateway 2.3:
+- made changes in function TXradio to handle retransmissions.
+- added device 9 to expose the number of retransmission
+
+
 RFM-MQTT-LCD Release 2.0 
 
 changed the way binary inputs behave. 
