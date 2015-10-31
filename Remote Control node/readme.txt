@@ -1,3 +1,10 @@
+RFM-MQTT-RC Release 2.0 
+by Computourist@gmail.com Oct 2015
+
+Made this node compatible to gateway 2.3:
+- made changes in function TXradio to handle retransmissions.
+- added device 9 to expose the number of retransmission
+
 RFM69 RC node sketch
 
 This node talks to the MQTT-Gateway and will send out commands to RC-controlled mains switches.
