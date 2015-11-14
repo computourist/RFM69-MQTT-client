@@ -1,7 +1,7 @@
-This example contain the configuration files for the following setup:
+This example contains the configuration files for the following setup:
 
-	node 2: DIG node wuth local output toggle
-	node 6: DTH node with local output toggle and temerature / humidity measurement
+	node 2: DIG node with local output toggle
+	node 6: DTH node with local output toggle and temperature / humidity measurement
 	node 4: RC node that controls a klikaanklikuit switch at address C1
 	
 
@@ -17,7 +17,7 @@ In this way the openhab status is set by a feedback message received from the no
 Most of the time a small delay can be observed between pressing the button in the Openhab UI and the state change in the UI. This delay is due to the time it needs to process and send/receive all messages.
 
 ITEMS
-In the items file a switch is configured to store the received status of the output. 
+In the items-file a switch is configured to store the received status of the output. 
 To display the status in the UI the following icons must be copied in folder /usr/share/openhab/webapps/images:
 
 	light-on.png must be copied to lamp-open.png
@@ -25,7 +25,7 @@ To display the status in the UI the following icons must be copied in folder /us
 	
 RULES
 In this file rules are included to:
-	- read RSSI values once a minute
+	- read RSSI values on node 2 once a minute
 	- update output values for node2 and node 6
-	- switch a light on and off via klikaanklikuit at preset times each day
+	- switch a light on and off via node 4 (klikaanklikuit) at preset times each day
 	
