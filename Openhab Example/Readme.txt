@@ -1,11 +1,11 @@
 This example contains the configuration files for the following setup:
 
 	node 2: DIG node with local output toggle
-	node 6: DTH node with local output toggle and temperature / humidity measurement
+	node 6: DHT node with local output toggle and temperature / humidity measurement
 	node 4: RC node that controls a klikaanklikuit switch at address C1
 	
 
-The standard DIG and DTH nodes have been configured to:
+The standard DIG and DHT nodes have been configured to:
 
 - send an state message after every write commando from openhab; ACK has been set to TRUE.
 - send a state message after each local toggle of the output.
@@ -17,7 +17,7 @@ In this way the openhab status is set by a feedback message received from the no
 Most of the time a small delay can be observed between pressing the button in the Openhab UI and the state change in the UI. This delay is due to the time it needs to process and send/receive all messages.
 
 ITEMS
-In the items-file a switch is configured to store the received status of the output. 
+In the items-file a switch is configured to store the received status of the output. The received commands (ON/OFF) are translated into states that Openhab understands (OPEN/CLOSED) for a switch.
 To display the status in the UI the following icons must be copied in folder /usr/share/openhab/webapps/images:
 
 	light-on.png must be copied to lamp-open.png
