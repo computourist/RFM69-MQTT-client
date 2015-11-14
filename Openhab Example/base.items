@@ -7,7 +7,7 @@ Number HUM2	"Humidity [%.1f %%]"	{mqtt="<[mosquitto:home/rfm_gw/nb/node02/dev49:
 Switch OUT2 <PushBtn> {mqtt=">[mosquitto:home/rfm_gw/sb/node02/dev16:command:ON:ON],>[mosquitto:home/rfm_gw/sb/node02/dev16:command:OFF:OFF]"}
 Switch OUT6 <PushBtn> {mqtt=">[mosquitto:home/rfm_gw/sb/node06/dev16:command:ON:ON],>[mosquitto:home/rfm_gw/sb/node06/dev16:command:OFF:OFF]"}
 
-/* String to read the output state */
+/* String to acquire the output state */
 String getSTAT6 "get STAT6" {mqtt=">[mosquitto:home/rfm_gw/sb/node06/dev16:command:*:default]"}
 String getRSSI2 "get RSSI" {mqtt=">[mosquitto:home/rfm_gw/sb/node02/dev02:command:*:default]"}
 
