@@ -1,0 +1,66 @@
+//
+// rules file for base home Computourist@gmail.com	November 5th, 2015
+//
+
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+import java.util.Random
+
+//
+//	refresh rules
+//
+
+rule "refresh RSSI2"	// periodically refresh value for signal strength on node 2
+	when
+		Time cron "0 0/1 * * * ?"
+	then
+		sendCommand(getRSSI2, "READ")
+end
+
+//
+//	update whenever a local switch is toggled
+//
+
+rule "Update OUT2"	// update state OUT2 after local node switch toggle 
+	when
+	Item STAT2 received update
+	then
+	if (STAT2.state==OPEN) {
+		postUpdate(OUT2, ON)}
+	if (STAT2.state==CLOSED) {
+		postUpdate(OUT2, OFF)}
+//	logInfo("stat2 changed: ", STAT2.state.toString())
+	
+end
+
+
+rule "Update OUT6"	// update state OUT6 after local node switch toggle 
+	when 
+	Item STAT6 received update
+	then
+	if (STAT6.state==OPEN) {
+		postUpdate(OUT6, ON) }
+	if (STAT6.state==CLOSED) {
+		postUpdate(OUT6, OFF)}
+end
+
+
+
+//
+//	Timing schedule *******************************
+//
+
+rule "Living on"	// switch on KAKU C1 18:20
+	when
+		Time cron "0 20 18 * * ?" 
+	then
+		sendCommand(KAKUC1,ON)
+end
+
+rule "Living off"	// switch off KAKU C1 22:46
+	when
+		Time cron "0 46 22 * * ?"
+	then
+		sendCommand(KAKUC1,OFF)
+end

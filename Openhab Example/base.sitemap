@@ -1,0 +1,19 @@
+sitemap base label="Base House"
+	
+{
+	Frame label="Controls" {
+		Switch item=OUT2 label="Node 2" icon="light"
+		Text item=STAT2 label="status node 2" icon="lamp"
+		Switch item=OUT6 label="Node 6" icon="light"
+		Text item=STAT6 label="status node 6" icon="lamp"
+	}
+	Frame label="Node 2" {
+		Text item=TEMP2 
+		Text item=HUM2
+		Text item=RSSI2
+	}
+	Frame label="Date" {
+		Text item=Date
+	}
+	
+}

@@ -1,0 +1,23 @@
+
+/* Numbers to store data values  */
+Number RSSI2 "RSSI [%d dBm]" {mqtt="<[mosquitto:home/rfm_gw/nb/node02/dev02:state:default]"}Number TEMP2	"Temperature [%.1f °C]"	{mqtt="<[mosquitto:home/rfm_gw/nb/node02/dev48:state:default]"}
+Number HUM2	"Humidity [%.1f %%]"	{mqtt="<[mosquitto:home/rfm_gw/nb/node02/dev49:state:default]"}
+
+/* Switch to write to the output */
+Switch OUT2 <PushBtn> {mqtt=">[mosquitto:home/rfm_gw/sb/node02/dev16:command:ON:ON],>[mosquitto:home/rfm_gw/sb/node02/dev16:command:OFF:OFF]"}
+Switch OUT6 <PushBtn> {mqtt=">[mosquitto:home/rfm_gw/sb/node06/dev16:command:ON:ON],>[mosquitto:home/rfm_gw/sb/node06/dev16:command:OFF:OFF]"}
+
+/* String to read the output state */
+String getSTAT6 "get STAT6" {mqtt=">[mosquitto:home/rfm_gw/sb/node06/dev16:command:*:default]"}
+String getRSSI2 "get RSSI" {mqtt=">[mosquitto:home/rfm_gw/sb/node02/dev02:command:*:default]"}
+
+/* Contacts to read the output state */
+Contact STAT2 "Status [%s]" {mqtt="<[mosquitto:home/rfm_gw/nb/node02/dev16:state:OPEN:ON],<[mosquitto:home/rfm_gw/nb/node02/dev16:state:CLOSED:OFF]"}
+Contact STAT6 "Status [%s]" {mqtt="<[mosquitto:home/rfm_gw/nb/node06/dev16:state:OPEN:ON],<[mosquitto:home/rfm_gw/nb/node06/dev16:state:CLOSED:OFF]"}
+
+/* Remote Controlled switch (KLIKAANKLIKUIT) item */
+Switch KAKUC1 <PushBtn> {mqtt=">[mosquitto:home/rfm_gw/sb/node04/dev72:command:ON:KAKU C1 ON],>[mosquitto:home/rfm_gw/sb/node04/dev72:command:OFF:KAKU C1 OFF]"}
+
+/* NTP binding demo item */
+DateTime               Date                    "Date [%1$tA, %1$td.%1$tm.%1$tY]"       <calendar>      { ntp="Europe/Amsterdam:nl_NL" }
+
