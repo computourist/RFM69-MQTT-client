@@ -14,7 +14,7 @@ Version compatibility:
 
 - GW release	2.2:	DHT2.1		LCD2.0		RC1.0		RFID1.0
 
-- GW release	2.3:	DHT2.2		LCD2.1		RC2.0	
+- GW release	2.3:	DHT2.2		LCD2.1		RC2.0   DIG2.2	
 
 
 RFID has not been upgraded yet since the code is not stable. (it will work -unstable- with GW2.3 though)
