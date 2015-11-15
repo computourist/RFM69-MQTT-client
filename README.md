@@ -10,6 +10,16 @@ Changes in Gateway version 2.3:
 - implemented system device 9: number of retransmissions needed in the radio link
 - removed some of the debug code as a result of memory constraints
 
+Version compatibility:
+
+GW release    2.2	    2.3
+DHT           2.1	    2.2
+DIG	          -   	  2.2
+LCD	          2.0	    2.1
+RC	          1.0	    2.0
+RFID	        1.0	    -
+
+RFID has not been upgraded yet since the code is not stable. (it will work -unstable- with GW2.3 though)
 
 Changes in Gateway version 2.2:
 - changed handling of binary input devices to improve compatibility with Openhab
