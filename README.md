@@ -1,10 +1,15 @@
-RFM69-MQTT-client
+Arduino - RFM69 based sensors and MQTT gateway 
 ================
+
+January 2016: published Gateway version 2.4:
+- this version is now compatible with Arduino IDE again
+- DEBUG function split into an MQTT and a radio part. Debugging can be done one at a time. This solves memory constraints.
+
+================
+
 November 2015: Openhab example added, showing the use of node-generated status messages to sync Openhab with local output toggles. 
 
 ================
-
-Arduino - RFM69 based sensors and MQTT gateway 
 
 Changes in Gateway version 2.3:
 - implemented system device 9: number of retransmissions needed in the radio link
