@@ -1,5 +1,19 @@
 RFM69 RFID node sketch
 
+Version 2.0
+
+Lewishollow had a look at this code and proposed blocking interrupts at sketch level, rather than in the libraries.
+The code is now stable; RFID cards are being reported reliably and the code doesn't crash any more.
+
+Sending READ commands to the node is still not perfect: the blocking of interrupts sometimes causes radio packets to get lost. 
+The gateway interprets this as a loss of signal of the radiolink. 
+
+The unedited version of the MFRC522 library can be used.
+
+
+
+Version 1.0
+
 This node talks to the MQTT-Gateway and will:
 - send sensor data periodically 
 - detect and read RFID cards and send the UID to the MQTT broker; 
