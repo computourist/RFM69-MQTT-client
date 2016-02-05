@@ -1,6 +1,10 @@
 Arduino - RFM69 based sensors and MQTT gateway 
 ================
 
+February 2016: added schematics for gateway 2.4 and DHT end node
+
+================
+
 January 2016: published Gateway version 2.4:
 - this version is now compatible with Arduino IDE again
 - DEBUG function split into an MQTT and a radio part. Debugging can be done one at a time. This solves memory constraints.
