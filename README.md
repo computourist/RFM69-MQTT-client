@@ -1,6 +1,10 @@
 Arduino - RFM69 based sensors and MQTT gateway 
 ================
 
+March 2016: corrected swapped NSS signals in schematics for gateway 2.4
+
+================
+
 February 2016: added schematics for gateway 2.4 and DHT end node
 
 ================
