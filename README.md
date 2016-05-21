@@ -1,6 +1,13 @@
 Arduino - RFM69 based sensors and MQTT gateway 
 ================
 
+May 2016: Published a Wifi connected ESP8266 node here: https://github.com/computourist/ESP8266-MQTT-client
+- it uses the same message format as the RFM nodes
+- it is a direct mqtt client, no gateway needed
+- RFM and ESP nodes can be mixed in the same setup
+
+================
+
 March 2016: corrected swapped NSS signals in schematics for gateway 2.4
 
 ================
