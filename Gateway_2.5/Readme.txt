@@ -15,10 +15,10 @@ RFM-MQTT-Gateway Release 2.4
 by Computourist@gmail.com January 2016
 
 - Syntax change
-The last release of Arduino IDE forces a function te be declared before it is used. A function prototype was used for mqtt_sub. 
+The last release of Arduino IDE forces a function to be declared before it is used. A function prototype was used for mqtt_sub. 
 
 - split the DEBUG options.
-To free up memory the DEBUG options were split in a radio and an MQTT part. Only one of them can be used. 
+To free up memory the DEBUG options were split in a radio and an MQTT part. Only one of them can be used at a time. 
 
 
 
